@@ -1,0 +1,9 @@
+установка Poetry
+https://www.jetbrains.com/help/pycharm/poetry.html
+https://medium.com/@zalun/django-with-poetry-ea95bd5083f7
+https://habr.com/ru/articles/593529/
+запуск установки локального окружения (из корневой папки проекта)
+
+poetry config virtualenvs.in-project true --local
+poetry init
+
