@@ -120,7 +120,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -134,8 +134,32 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 10
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "rest_framework.authentication.TokenAuthentication",
+    # ],
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.IsAuthenticated",
+    # ],
+    # 'DEFAULT_RENDERER_CLASSES': [
+    #     'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+    #     'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    #     # Any other renders
+    # ],
+
+    # 'DEFAULT_PARSER_CLASSES': [
+    #     # If you use MultiPartFormParser or FormParser, we also have a camel case version
+    #     'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
+    #     'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    #     # Any other parsers
+    # ],
+    # "JSON_UNDERSCOREIZE": {
+    #     "no_underscore_before_number": True
+    # },
+
+    'DEFAULT_PAGINATION_CLASS': 'config.paginations.CustomPageNumberPagination',
+    'PAGE_SIZE': 5
 }
 
 AUTH_USER_MODEL = "user.User"
+
+

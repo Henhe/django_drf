@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from config.models import Timestamp
 from enum import Enum
-
+from django.contrib.auth.models import PermissionsMixin
 
 class UserRole(Enum):
     USER = 1
@@ -39,7 +39,6 @@ class UserManager(BaseUserManager):
             password=None,
 
     ):
-        print(email)
         user = self.create_user(
             email=email,
             is_active=True,
@@ -51,7 +50,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, Timestamp, models.Model):
+class User(AbstractBaseUser, Timestamp, PermissionsMixin):
     email = models.EmailField(unique=True)
     username = models.CharField(unique=True, max_length=100)
     first_name = models.CharField(max_length=50, blank=True)
@@ -75,3 +74,6 @@ class User(AbstractBaseUser, Timestamp, models.Model):
     def is_staff(self):
         return self.role == UserRole.ADMIN.value
 
+    @property
+    def is_superuser(self):
+        return self.role == UserRole.ADMIN.value
