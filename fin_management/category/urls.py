@@ -1,10 +1,10 @@
-from budget.views import BudgetViewSet#, TokenAuthView, RegisterView, UserContactViewSet
+from category.views import CategoryViewSet#, TokenAuthView, RegisterView, UserContactViewSet
 from rest_framework.routers import SimpleRouter
 from django.urls import path
 
 
 router = SimpleRouter()
-router.register("", BudgetViewSet)
+router.register("", CategoryViewSet)
 # router_contacts = SimpleRouter()
 # router.register("contacts", UserContactViewSet)
 

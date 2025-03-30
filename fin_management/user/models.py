@@ -71,7 +71,7 @@ class User(AbstractBaseUser, Timestamp, models.Model):
     def __str__(self):
         return self.username
 
-    # @property
-    # def is_staff(self):
-    #     return self.role == UserRole.ADMIN.value
+    @property
+    def is_staff(self):
+        return self.role == UserRole.ADMIN.value
 
