@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny
-# from user.permissions import UserPermission
+from user.permissions import UserPermission
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 # from user.filters import UserFilterSet
@@ -15,7 +15,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = [UserPermission]
+    permission_classes = [UserPermission]
     search_fields = ("first_name", "last_name", "username", "email")
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
     ordering = ("-id", )
