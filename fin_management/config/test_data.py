@@ -53,6 +53,6 @@ def generate_budget(number):
     seeder.execute()
 
 if __name__ == "__main__":
-    # generate_users(40)
+    generate_users(5)
     # generate_category(30)
-    generate_budget(20)
+    # generate_budget(20)

@@ -3,6 +3,7 @@ from rest_framework.viewsets import ModelViewSet
 from user.models import User
 from user.serializers import UserSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from config.permissions import IsOwnerOfObject
 from rest_framework.views import APIView
 # from user.service import UserService
 
@@ -27,7 +28,7 @@ from user.serializers import LoginSerializer, RegistrationSerializer
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [UserPermission, IsAuthenticatedOrReadOnly]
+    permission_classes = [UserPermission, IsOwnerOfObject]
     search_fields = ("first_name", "last_name", "username", "email")
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
     ordering = ("-id", )
