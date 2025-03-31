@@ -3,6 +3,9 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from config.models import Timestamp
 from enum import Enum
 from django.contrib.auth.models import PermissionsMixin
+from datetime import datetime, timedelta
+from config import settings
+import jwt
 
 class UserRole(Enum):
     USER = 1
@@ -77,3 +80,27 @@ class User(AbstractBaseUser, Timestamp, PermissionsMixin):
     @property
     def is_superuser(self):
         return self.role == UserRole.ADMIN.value
+
+    @property
+    def token(self):
+        """
+        Позволяет получить токен пользователя путем вызова user.token, вместо
+        user._generate_jwt_token(). Декоратор @property выше делает это
+        возможным. token называется "динамическим свойством".
+        """
+        return self._generate_jwt_token()
+
+    def _generate_jwt_token(self):
+        """
+        Генерирует веб-токен JSON, в котором хранится идентификатор этого
+        пользователя, срок действия токена составляет 1 день от создания
+        """
+        dt = datetime.now() + timedelta(days=1)
+        # print(f'{dt.strftime('%s')=}')
+
+        token = jwt.encode({
+            'id': self.pk,
+            'exp': int((dt - datetime(1, 1, 1, 0, 0)).total_seconds())
+        }, settings.SECRET_KEY, algorithm='HS256')
+
+        return token.decode('utf-8')

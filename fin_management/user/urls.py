@@ -1,4 +1,4 @@
-from user.views import UserViewSet#, TokenAuthView, RegisterView, UserContactViewSet
+from user.views import UserViewSet#, LoginAPIView, RegistrationAPIView #, TokenAuthView, RegisterView, UserContactViewSet
 from rest_framework.routers import SimpleRouter
 from django.urls import path
 
@@ -10,5 +10,6 @@ router.register("", UserViewSet)
 
 urlpatterns = [
     # path("token-auth/", TokenAuthView.as_view(), name="token-auth"),
-    # path("register/", RegisterView.as_view(), name="register"),
+    # path("register/", RegistrationAPIView.as_view(), name="register"),
+    # path('login/', LoginAPIView.as_view(), name="login"),
 ] + router.urls

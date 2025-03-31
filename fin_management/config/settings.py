@@ -134,15 +134,19 @@ STATIC_URL = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     # "DEFAULT_AUTHENTICATION_CLASSES": [
     #     "rest_framework.authentication.TokenAuthentication",
     # ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    ),
     # "DEFAULT_PERMISSION_CLASSES": [
     #     "rest_framework.permissions.IsAuthenticated",
     # ],
@@ -168,12 +172,17 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "user.User"
 
-# JWT https://habr.com/ru/articles/793058/
+# JWT
+# https://habr.com/ru/articles/538040/
+# https://medium.com/django-unleashed/securing-django-rest-apis-with-jwt-authentication-using-simple-jwt-a-step-by-step-guide-28efa84666fe
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=10),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=30),
+    'SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME_LATE_USER': timedelta(days=30),
+    # 'ROTATE_REFRESH_TOKENS': True,
+    # 'BLACKLIST_AFTER_ROTATION': True,
 }
