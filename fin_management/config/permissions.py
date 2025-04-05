@@ -27,9 +27,8 @@ class DjangoViewAction(CustomEnum):
 
 
 class CustomBasePermission(BasePermission):
-    allowed_actions = [
-        DjangoViewAction.values()
-    ]
+    allowed_actions = DjangoViewAction.values()
+
 
     # def has_permission(self, request, view):
     #     if not (request.user and request.user.is_authenticated):
