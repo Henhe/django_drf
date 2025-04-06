@@ -6,8 +6,7 @@ from category.serializers import CategorySerializer
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from config.permissions import IsCreatorOfObject
-from category.permissions import CategoryPermission
-from rest_framework import generics, status
+from rest_framework import status
 
 
 # class CategoryViewSet(ModelViewSet):

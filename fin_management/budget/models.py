@@ -12,15 +12,6 @@ class Budget(Timestamp, models.Model):
         return f'{self.name} ({self.creator}) - {self.sum}'
 
 
-# class BudgetExecution(Timestamp, models.Model):
-#     budget = models.ForeignKey(Budget, on_delete=models.CASCADE, related_name="budget_executions")
-#     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_budget_executions")
-#     sum = models.FloatField()
-#
-#     def __str__(self):
-#         return f'{self.budget} ({self.creator}) - {self.sum}'
-
-
 class Funds(Timestamp, models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE, related_name="budget_funds")
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_funds")

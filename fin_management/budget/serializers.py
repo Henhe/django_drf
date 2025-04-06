@@ -1,4 +1,4 @@
-from rest_framework.serializers import ModelSerializer #, IntegerField, CharField, EmailField
+from rest_framework.serializers import ModelSerializer
 from budget.models import Budget, Funds
 
 

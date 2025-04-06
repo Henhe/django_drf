@@ -1,5 +1,4 @@
 from io import BytesIO
-from django.template.context_processors import request
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
@@ -45,10 +44,7 @@ class ReportAPIView(APIView):
             return Response(None, status=status.HTTP_201_CREATED)
 
 
-
-
 class BudgetViewSet(ModelViewSet):
-    #print(f'{request.user=}')
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
     search_fields = ("name", "creator__username", "creator__first_name", "creator__last_name",
@@ -68,7 +64,6 @@ class BudgetViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def update(self, request, pk=None, *args, **kwargs):
-        # print(f'{request.data=}')
         data = request.data
         data['creator'] = request.user.id
         serializer = self.get_serializer(data=data)

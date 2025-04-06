@@ -15,7 +15,7 @@ class IsCreatorOrOwnerOfBudgetExecution(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_staff:
             return True
-        if (isinstance(obj, BudgetExecution) and obj.budget.creator == request.user
+        if (isinstance(obj, Funds) and obj.budget.creator == request.user
                 or obj.creator == request.user):
             return True
         return False
