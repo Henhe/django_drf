@@ -1,14 +1,13 @@
-from budget.views import BudgetViewSet#, TokenAuthView, RegisterView, UserContactViewSet
+from budget.views import BudgetViewSet, FundsViewSet#, TokenAuthView, RegisterView, UserContactViewSet
 from rest_framework.routers import SimpleRouter
 from django.urls import path
 
 
 router = SimpleRouter()
-router.register("", BudgetViewSet)
-# router_contacts = SimpleRouter()
-# router.register("contacts", UserContactViewSet)
+router.register("", BudgetViewSet, basename='budget')
+# router.register("funds", FundsViewSet, basename='fund')
 
 urlpatterns = [
-    # path("token-auth/", TokenAuthView.as_view(), name="token-auth"),
-    # path("register/", RegisterView.as_view(), name="register"),
+    path("funds/", FundsViewSet.as_view({'get':'list', 'post':'create'}), name="fund"),
 ] + router.urls
+print(urlpatterns)

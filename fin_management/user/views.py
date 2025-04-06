@@ -1,8 +1,14 @@
 from django.contrib.auth import authenticate
+from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.decorators import authentication_classes, permission_classes, api_view
+from rest_framework.request import Request
 from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import TokenError
+
 from user.models import User
 from user.serializers import UserSerializer
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 from config.permissions import IsOwnerOfObject
 from rest_framework.views import APIView
 # from user.service import UserService
@@ -23,12 +29,13 @@ from rest_framework.views import APIView
 
 from user.serializers import LoginSerializer, RegistrationSerializer
 # from user.renderers import UserJSONRenderer
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken, BlacklistedToken
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [UserPermission, IsOwnerOfObject]
+    permission_classes = [IsAuthenticated, UserPermission, IsOwnerOfObject]
     search_fields = ("first_name", "last_name", "username", "email")
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
     ordering = ("-id", )
@@ -36,6 +43,37 @@ class UserViewSet(ModelViewSet):
     # filterset_class = UserFilterSet
 
 
+# class LogoutView(APIView):
+#     permission_classes = (IsAuthenticated,)
+#
+#     def post(self, request):
+#         try:
+#             refresh_token = request.data["refresh_token"]
+#             token = RefreshToken(refresh_token)
+#             token.blacklist()
+#
+#             return Response(status=status.HTTP_205_RESET_CONTENT)
+#         except Exception as e:
+#             print(f'{e=}')
+#             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@authentication_classes([JWTAuthentication])
+def logout(request):
+    if request.method == 'POST':
+        # Access the refresh token from request headers or cookies
+        try:
+            print(f'{request.META.get('HTTP_AUTHORIZATION', '').split()[1]=}')
+            # refresh_token = request.data["refresh"]
+            refresh_token = request.META.get('HTTP_AUTHORIZATION', '').split()[1]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message':'User logout successfully'},status=status.HTTP_205_RESET_CONTENT)
+        except (ObjectDoesNotExist, TokenError) as err:
+            return Response({'message':str(err)},status=status.HTTP_400_BAD_REQUEST)
+    else:
+        return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 # class RegistrationAPIView(APIView):
 #     """
 #     Разрешить всем пользователям (аутентифицированным и нет) доступ к данному эндпоинту.
