@@ -23,7 +23,7 @@ class Budget(Timestamp, models.Model):
 
 class Funds(Timestamp, models.Model):
     budget = models.ForeignKey(Budget, on_delete=models.CASCADE, related_name="budget_funds")
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_funde")
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_funds")
     sum = models.FloatField()
 
     def __str__(self):

@@ -1,7 +1,9 @@
+from io import BytesIO
 from django.template.context_processors import request
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from budget.models import Budget, Funds
 from user.models import User
@@ -10,13 +12,47 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from config.permissions import IsCreatorOfObject
 from budget.permissions import IsCreatorOrOwnerOfBudgetExecution, BudgetPermission, Funds, FundsPermission
+from django.http import HttpResponse
+from django.db.models import Prefetch
+
+class ReportAPIView(APIView):
+
+    def get_permissions(self):
+        permission_classes = [IsAuthenticatedOrReadOnly]
+        return [permission() for permission in permission_classes]
+
+    def get(self, request):
+        print(f'{request.GET=}')
+        id = request.GET.get('id', '')
+        data_ = Budget.objects.filter(id=id).first()
+        if data_:
+            response = HttpResponse(content_type='text/plain')
+            response['Content-Disposition'] = 'filename="report.txt"'
+
+            buffer = BytesIO()
+            buffer.write(f'Budget: {data_}'.encode('utf-8'))
+            data_funds = Funds.objects.filter(budget__pk=id).all()
+            for i in data_funds:
+                buffer.write(f'\nCreator: {i.creator} sum {i.sum}'.encode('utf-8'))
+
+            txt = buffer.getvalue()
+            buffer.close()
+
+            response = HttpResponse(txt, content_type='application/text charset=utf-8')
+            response['Content-Disposition'] = 'attachment; filename="report.txt"'
+            return response
+        else:
+            return Response(None, status=status.HTTP_201_CREATED)
+
+
 
 
 class BudgetViewSet(ModelViewSet):
     #print(f'{request.user=}')
     queryset = Budget.objects.all()
     serializer_class = BudgetSerializer
-    search_fields = ("name", "creator__username", "creator__first_name", "creator__last_name", "creator__email", "sum")
+    search_fields = ("name", "creator__username", "creator__first_name", "creator__last_name",
+                     "creator__email", "sum")
     filter_backends = (SearchFilter, OrderingFilter, DjangoFilterBackend)
     ordering = ("-id", )
     ordering_fields = ("name", "creator__username", "sum")
@@ -85,4 +121,5 @@ class FundsViewSet(ModelViewSet):
             permission_classes = [IsAuthenticated]
 
         return [permission() for permission in permission_classes]
+
 
