@@ -13,6 +13,7 @@ from config.permissions import IsCreatorOfObject
 from budget.permissions import IsCreatorOrOwnerOfBudgetExecution, BudgetPermission, Funds, FundsPermission
 from django.http import HttpResponse
 from django.db.models import Prefetch
+from config.tasks import print_some
 
 class ReportAPIView(APIView):
 
@@ -60,6 +61,7 @@ class BudgetViewSet(ModelViewSet):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
+        print_some.delay(f'create {serializer.data} for budget')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
@@ -69,6 +71,7 @@ class BudgetViewSet(ModelViewSet):
         serializer = self.get_serializer(data=data)
         serializer.is_valid(raise_exception=True)
         self.update(serializer)
+        print_some.delay(f'patch {serializer.data} for budget')
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK, headers=headers)
 

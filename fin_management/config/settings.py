@@ -13,6 +13,8 @@ import os
 
 import environ
 from pathlib import Path
+from celery.schedules import crontab
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -200,3 +202,18 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True
 }
 
+
+# CELERY_BROKER_URL = 'amqp://myuser:mypassword@localhost:5672/myvhost'
+# CELERY_RESULT_BACKEND = 'amqp://myuser:mypassword@localhost:5672/myvhost'
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
+
+
+CELERY_BEAT_SCHEDULE = {
+    "print_some_info": {
+        "task": "config.tasks.print_some",
+        "schedule": crontab(minute="*/1"),
+        "args": ('test beat schedule',),
+    }
+}

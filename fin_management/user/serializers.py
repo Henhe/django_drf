@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, CharField, ValidationErr
 #, IntegerField, CharField, EmailField
 from user.models import User
 from django.contrib.auth import authenticate
-
+from config.tasks import print_some
 
 class UserSerializer(ModelSerializer):
     class Meta:
@@ -37,7 +37,7 @@ class LoginSerializer(Serializer):
     username = CharField(max_length=255, read_only=True)
     password = CharField(max_length=128, write_only=True)
     token = CharField(max_length=255, read_only=True)
-
+    print_some.delay(f'login for user')
     def validate(self, data):
         # В методе validate мы убеждаемся, что текущий экземпляр
         # LoginSerializer значение valid. В случае входа пользователя в систему
@@ -48,6 +48,7 @@ class LoginSerializer(Serializer):
         password = data.get('password', None)
         print(f'{username=}')
         print(f'{password=}')
+        print_some.delay(f'login for user')
         # Вызвать исключение, если не предоставлена почта.
         if username is None:
             raise ValidationError(
